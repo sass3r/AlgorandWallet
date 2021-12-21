@@ -39,10 +39,10 @@ export class NewAccountComponent implements OnInit {
 
   async onSubmit(form: any) {
     if(this.accountForm.valid){
-      console.log(form);
-      console.log(form['password']);
+      let password = form['password'];
+      console.log(password);
       console.log(this.passwordKey);
-      await AppStorage.createPassword(this.passwordKey, form['password'],"MY_STORAGE")
+      await AppStorage.createPassword(this.passwordKey, password)
       .then(() => {
         console.log('success');
         this.router.navigateByUrl('display-options');

@@ -1,3 +1,20 @@
-<p>Billetera creada</p>
-<p>{{getAddress()}}</p>
-<p>{{getMnemonic()}}</p>
+<p>Frase mnemotécnica</p>
+<div>
+    <button mat-raised-button [cdkCopyToClipboard]="getMnemonic()">Copiar</button>
+    <button mat-raised-button (click)="refresh()">Regenerar</button>
+</div>
+<div>
+    <p>Tome nota de las siguientes palabras en el orden correcto. Forman la frase de recuperación para su nueva cuenta.</p>
+</div>
+<div>
+    <p>{{getMnemonic()}}</p>
+</div>
+<div>
+    <p>¡No comparta estas palabras con nadie! Estas palabras pueden usarse para robar todos sus fondos.</p>
+</div>
+<div>
+    <input type="radio">He escrito y respaldado mi frase mnemotécnica de 25 palabras en el orden correcto.
+</div> 
+<div>
+    <button mat-raised-button (click)="continue()">Continuar</button>
+</div>

@@ -19,4 +19,8 @@ export class ShowMenuComponent implements OnInit {
     this.router.navigateByUrl('new-wallet');
   }
 
+  importWallet() {
+    this.router.navigateByUrl('import');
+  }
+
 }

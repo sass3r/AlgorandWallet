@@ -9,8 +9,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
 import { ShowMenuComponent } from './show-menu/show-menu.component';
 import { NewWalletComponent } from './new-wallet/new-wallet.component';
+import { BalanceComponent } from './balance/balance.component';
+import { VerifyPasswordComponent } from './verify-password/verify-password.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { VerifyMnemonicComponent } from './verify-mnemonic/verify-mnemonic.component';
+import { ImportWalletComponent } from './import-wallet/import-wallet.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +24,11 @@ import { NewWalletComponent } from './new-wallet/new-wallet.component';
     NewAccountComponent,
     ConnectComponent,
     ShowMenuComponent,
-    NewWalletComponent
+    NewWalletComponent,
+    BalanceComponent,
+    VerifyPasswordComponent,
+    VerifyMnemonicComponent,
+    ImportWalletComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +38,9 @@ import { NewWalletComponent } from './new-wallet/new-wallet.component';
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    ClipboardModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

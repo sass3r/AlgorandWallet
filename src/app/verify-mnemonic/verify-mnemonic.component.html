@@ -1,0 +1,46 @@
+<p>Verificar frase</p>
+<form [formGroup]="mnemonicForm" (ngSubmit)="onSubmit(mnemonicForm.value)">
+        <div>
+            <mat-form-field>
+                <input matInput type="text" name="word1" placeholder="Palabra {{word1}}" formControlName="word1">
+                <mat-error *ngIf="!getWordForm('word1').valid && mnemonicForm.controls['word1'].touched">
+                    {{errorMessage}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput type="text" name="word2" placeholder="Palabra {{word2}}" formControlName="word2">
+                <mat-error *ngIf="!getWordForm('word2').valid && mnemonicForm.controls['word2'].touched">
+                    {{errorMessage}}
+                </mat-error>
+            </mat-form-field>        
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput type="text" name="word3" placeholder="Palabra {{word3}}" formControlName="word3">
+                <mat-error *ngIf="!getWordForm('word3').valid && mnemonicForm.controls['word3'].touched">
+                    {{errorMessage}}
+                </mat-error>
+            </mat-form-field>        
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput type="text" name="word4" placeholder="Palabra {{word4}}" formControlName="word4">
+                <mat-error *ngIf="!getWordForm('word4').valid && mnemonicForm.controls['word4'].touched">
+                    {{errorMessage}}
+                </mat-error>
+            </mat-form-field>        
+        </div>
+        <button *ngIf="!this.verified" mat-raised-button type="submit">Verificar</button>
+</form>
+<div *ngIf="this.verified">
+    <form [formGroup]="walletForm" (ngSubmit)="registerWallet(walletForm.value)">
+        <input matInput type="text" name="name" placeholder="Nombre billetera" formControlName="name">
+        <mat-error *ngIf="!getWalletNameForm().valid && walletForm.controls['name'].touched">
+            {{errorMessage}}
+        </mat-error>
+        <button mat-raised-button type="submit">Crear billetera</button>
+    </form>
+</div>
+
