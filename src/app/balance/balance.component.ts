@@ -13,7 +13,7 @@ export class BalanceComponent implements OnInit {
   private algodToken: string;
   private algodServer: string;
   private algodPort: string;
-  private algodClient: algosdk.Algodv2;
+  private algodClient: Algodv2;
   private walletAddress: string;
   private obfuscateKey: string;
   amount: string;
@@ -24,7 +24,7 @@ export class BalanceComponent implements OnInit {
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     this.algodServer = 'http://200.58.83.81';
     this.algodPort = '4001';
-    this.algodClient = new algosdk.Algodv2(this.algodToken,this.algodServer, this.algodPort);
+    this.algodClient = new Algodv2(this.algodToken,this.algodServer, this.algodPort);
     this.walletAddress = "";
     this.obfuscateKey = "";
     this.amount = "";

@@ -8,7 +8,7 @@ import { BalanceComponent } from './balance/balance.component';
 import { VerifyPasswordComponent } from './verify-password/verify-password.component';
 import { VerifyMnemonicComponent } from './verify-mnemonic/verify-mnemonic.component';
 import { ImportWalletComponent } from './import-wallet/import-wallet.component';
-
+import { TransactionComponent } from './transaction/transaction.component';
 
 const routes: Routes = [
   { path: 'new-account', component: NewAccountComponent },
@@ -18,9 +18,8 @@ const routes: Routes = [
   { path: 'balance', component: BalanceComponent },
   { path: 'verify', component: VerifyPasswordComponent },
   { path: 'verify-mnemonic', component: VerifyMnemonicComponent },
-  { path: 'import', component: ImportWalletComponent }
-
-
+  { path: 'import', component: ImportWalletComponent },
+  { path: 'transfer', component: TransactionComponent }
 ];
 
 @NgModule({

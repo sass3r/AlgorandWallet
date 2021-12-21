@@ -17,6 +17,7 @@ import { VerifyPasswordComponent } from './verify-password/verify-password.compo
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { VerifyMnemonicComponent } from './verify-mnemonic/verify-mnemonic.component';
 import { ImportWalletComponent } from './import-wallet/import-wallet.component';
+import { TransactionComponent } from './transaction/transaction.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ImportWalletComponent } from './import-wallet/import-wallet.component';
     BalanceComponent,
     VerifyPasswordComponent,
     VerifyMnemonicComponent,
-    ImportWalletComponent
+    ImportWalletComponent,
+    TransactionComponent
   ],
   imports: [
     BrowserModule,
