@@ -1,15 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import AppStorage from "@randlabs/encrypted-local-storage";
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { MultisigMetadata } from 'algosdk';
 
 @Component({
-  selector: 'app-verify-password',
-  templateUrl: './verify-password.component.html',
-  styleUrls: ['./verify-password.component.scss']
+  selector: 'app-multisign-confirm',
+  templateUrl: './multisign-confirm.component.html',
+  styleUrls: ['./multisign-confirm.component.scss']
 })
-export class VerifyPasswordComponent implements OnInit {
+export class MultisignConfirmComponent implements OnInit {
 
   private obfuscateKey: string;
   private paswordKey: string;
@@ -17,9 +18,10 @@ export class VerifyPasswordComponent implements OnInit {
   errorMessage: string;
 
   constructor(
-    public dialogRef: MatDialogRef<VerifyPasswordComponent>,
+    public dialogRef: MatDialogRef<MultisignConfirmComponent>,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: MultisigMetadata,
   ) { 
     this.obfuscateKey = "";
     this.paswordKey = "masterKey";
@@ -50,5 +52,15 @@ export class VerifyPasswordComponent implements OnInit {
   getPasswordForm(): FormArray {
     return this.verifyForm.get('password') as FormArray;
   } 
+
+  getCoSignersNum(): number {
+    let params = this.data;
+    let addrs = params.addrs; 
+    return addrs.length;
+  }
+
+  getSignersNum(): number {
+    return this.data.threshold;
+  }
 
 }

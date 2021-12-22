@@ -1,0 +1,18 @@
+<h2>Revisar y Confirmar</h2>
+<h3>Está creando una billetera multifirma de {{getCoSignersNum()}} claves que requiere {{getSignersNum()}} firmas</h3>
+<div *ngFor="let addr of data.addrs; index as i">
+    <b>Firma #{{i+1}}</b>
+    <p>{{addr}}</p>
+</div>
+<h3>Tu contraseña para crear la nueva billetera multifirma</h3>
+<form [formGroup]="verifyForm" (ngSubmit)="onSubmit(verifyForm.value)">
+    <div>
+        <mat-form-field>
+            <input matInput type="password" name="password" placeholder="Contraseña" formControlName="password">
+            <mat-error *ngIf="!getPasswordForm().valid && verifyForm.controls['password'].touched">
+                {{errorMessage}}
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <button mat-raised-button type="submit">Crear billetera</button>
+</form>

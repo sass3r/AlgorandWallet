@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as algosdk from 'algosdk';
 import AppStorage from "@randlabs/encrypted-local-storage";
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommunicationService } from '../services/communication.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-wallet',
@@ -15,6 +16,7 @@ export class NewWalletComponent implements OnInit {
   private mnemonic: string;
   private privateKey: Uint8Array;
   private passwordKey: string;
+  private wallet: object;
 
   constructor(
     private router: Router,
@@ -25,23 +27,31 @@ export class NewWalletComponent implements OnInit {
     this.mnemonic = algosdk.secretKeyToMnemonic(this.account.sk);
     this.privateKey = this.account.sk;
     this.passwordKey = "masterKey";
+    this.wallet = {};
+    this.router.events
+    .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+    .subscribe(event => {
+      if (event.id === 1 && event.url === event.urlAfterRedirects) {
+        this.router.navigateByUrl('connect');
+      }
+    });
   }
 
   ngOnInit() {
-    let wallet = {
+    this.wallet = {
       'address': this.address,
       'privateKey': this.privateKey,
       'mnemonic': this.mnemonic
     };
     this.communicationService.changeEmitted$.subscribe((change: any) => {
       if(change.topic == "getWalletData") {
-        this.communicationService.emitChange({topic: 'setWalletData', msg:wallet});
+        this.communicationService.emitChange({topic: 'setWalletData', msg:this.wallet});
       }
     });
   }
 
-  refresh() {
-    window.location.reload();
+  regenetareAccount() {
+    this.generateAccount();
   }
 
   getAddress(): string {
@@ -54,5 +64,17 @@ export class NewWalletComponent implements OnInit {
   
   continue() {
     this.router.navigateByUrl('verify-mnemonic');
+  }
+
+  private generateAccount() {
+    this.account = algosdk.generateAccount();
+    this.address = this.account.addr;
+    this.mnemonic = algosdk.secretKeyToMnemonic(this.account.sk);
+    this.privateKey = this.account.sk;
+    this.wallet = {
+      'address': this.address,
+      'privateKey': this.privateKey,
+      'mnemonic': this.mnemonic
+    };
   }
 }

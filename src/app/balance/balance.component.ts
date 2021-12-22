@@ -3,6 +3,8 @@ import AppStorage from "@randlabs/encrypted-local-storage";
 import { CommunicationService } from '../services/communication.service';
 import * as algosdk from 'algosdk';
 import { Algodv2 } from 'algosdk';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-balance',
@@ -14,23 +16,39 @@ export class BalanceComponent implements OnInit {
   private algodServer: string;
   private algodPort: string;
   private algodClient: Algodv2;
-  private walletAddress: string;
+  private wallet: any;
   private obfuscateKey: string;
   amount: string;
+  count: any;
 
   constructor(
-    private communicationService: CommunicationService
+    private communicationService: CommunicationService,
+    private router: Router,
   ) {
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     this.algodServer = 'http://200.58.83.81';
     this.algodPort = '4001';
     this.algodClient = new Algodv2(this.algodToken,this.algodServer, this.algodPort);
-    this.walletAddress = "";
+    this.wallet = {};
     this.obfuscateKey = "";
     this.amount = "";
+    this.count = "0";
+    this.router.events
+      .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+      .subscribe(event => {
+        if (event.id === 1 && event.url === event.urlAfterRedirects) {
+          this.router.navigateByUrl('connect');
+        }
+      });
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.count = await AppStorage.getItem("count");
+    this.communicationService.changeEmitted$.subscribe((change: any) => {
+      if(change.topic == "getWallet") {
+        this.communicationService.emitChange({topic: 'setWallet', msg: this.wallet});
+      }
+    });
     this.communicationService.changeEmitted$.subscribe((change: any) => {
       if(change.topic == "setObfuscateKey") {
         this.obfuscateKey = change.msg;
@@ -41,7 +59,8 @@ export class BalanceComponent implements OnInit {
   }
 
   async getBalance() {
-    let accountInfo = await this.algodClient.accountInformation(this.walletAddress).do()
+    let walletAddress = this.wallet.address;
+    let accountInfo = await this.algodClient.accountInformation(walletAddress).do()
     .then(info => {
       console.log(info);
       this.amount = info['amount'];
@@ -52,17 +71,26 @@ export class BalanceComponent implements OnInit {
   }
 
   async getWallet() {
+    let walletKey = 'wallet_'+this.count;
     console.log(this.obfuscateKey);
     let appStorage = new AppStorage(this.obfuscateKey);
-    let data = await appStorage.loadItemFromStorage('wallet')
+    let data = await appStorage.loadItemFromStorage(walletKey)
     .then((data) => {
       console.log(data);
-      this.walletAddress = data.address;
+      this.wallet = data;
       this.getBalance();
     })
     .catch(e => {
       console.log(e);
     });
+  }
+
+  transfer() {
+    this.router.navigateByUrl('transfer');
+  }
+
+  addWallet() {
+    this.router.navigateByUrl('display-options');
   }
 
 }

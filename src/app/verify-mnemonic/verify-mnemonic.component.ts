@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import AppStorage from "@randlabs/encrypted-local-storage";
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommunicationService } from '../services/communication.service';
 import { VerifyPasswordComponent } from '../verify-password/verify-password.component';
 import { MatDialog } from '@angular/material/dialog';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-verify-mnemonic',
@@ -26,6 +27,7 @@ export class VerifyMnemonicComponent implements OnInit {
   word3: number;
   word4: number;
   verified: Boolean;
+  count: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,15 +50,26 @@ export class VerifyMnemonicComponent implements OnInit {
     this.walletForm = this.formBuilder.group({
       'name': ['',[Validators.required]]
     });
+    this.count = "0";
     this.verified = false;
     this.address = "";
     this.mnemonic = "";
     this.privateKey = "";
     this.obfuscateKey = "";
     this.walletName = "";
+    this.router.events
+    .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+    .subscribe(event => {
+      if (event.id === 1 && event.url === event.urlAfterRedirects) {
+        this.router.navigateByUrl('connect');
+      }
+    });
   }
 
   async ngOnInit() {
+    this.count = await AppStorage.getItem("count");
+    let id = parseInt(this.count) + 1
+    this.count = id.toString();
     this.communicationService.changeEmitted$.subscribe((change: any) => {
       if(change.topic == "getObfuscateKey") {
         this.communicationService.emitChange({topic: 'setObfuscateKey', msg:this.obfuscateKey});
@@ -145,7 +158,7 @@ export class VerifyMnemonicComponent implements OnInit {
   }
 
   async savePrivKey() {
-    let key = "privateKey";
+    let key = "privateKey_"+this.count;
     let data = new Uint8Array(Buffer.from(this.privateKey));
     await AppStorage.savePrivatekeyToStorage(key,this.passwordKey,data)
     .then(() => {
@@ -158,19 +171,15 @@ export class VerifyMnemonicComponent implements OnInit {
   }
 
   async saveWallet() {
-    console.log(this.obfuscateKey);
-    let key =  "wallet";
+    let key =  "wallet_"+this.count;
     let appStorage = new AppStorage(this.obfuscateKey);
     let obj = {
       name: this.walletName,
       address: this.address,
-      mnemonic: this.mnemonic
+      mnemonic: this.mnemonic,
+      multisign: false
     };
-    console.log(obj);
     await appStorage.saveItemToStorage(key,obj)
-    .then(() => {
-      console.log("Wallet stored");
-    })
     .catch(e => {
       console.log("fail to store wallet");
       console.log(e);
@@ -179,13 +188,21 @@ export class VerifyMnemonicComponent implements OnInit {
 
   verifyPasswordOpenDialog() {
     let passwordDialog = this.dialog.open(VerifyPasswordComponent,{
-      width: '230px'
+      width: '230px',
+      disableClose: true,
     });
     passwordDialog.afterClosed().subscribe(async (result: any) => {
       this.obfuscateKey = result;
       await this.savePrivKey();
       await this.saveWallet();
+      AppStorage.setItem("count",this.count);
       this.router.navigateByUrl('balance');
     });
+  }
+
+  getRandomValue(): string {
+    let array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array.toString();
   }
 }

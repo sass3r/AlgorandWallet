@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import AppStorage from "@randlabs/encrypted-local-storage";
 import { VerifyPasswordComponent } from '../verify-password/verify-password.component';
 import { CommunicationService } from '../services/communication.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import AlgodClient from 'algosdk/dist/types/src/client/v2/algod/algod';
 import * as algosdk from 'algosdk';
 import { Algodv2 } from 'algosdk';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-transaction',
@@ -28,6 +29,7 @@ export class TransactionComponent implements OnInit {
   amount: number;
   receiver: string;
   note: string;
+  count: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,6 +43,7 @@ export class TransactionComponent implements OnInit {
     this.amount = 0;
     this.receiver = "";
     this.note = "";
+    this.count = "0";
     this.privateKey = new Uint8Array;
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     this.algodServer = 'http://200.58.83.81';
@@ -51,10 +54,17 @@ export class TransactionComponent implements OnInit {
       'address': ['',[Validators.required]],
       'note': ['',[Validators.required]],
     });
-
+    this.router.events
+    .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+    .subscribe(event => {
+      if (event.id === 1 && event.url === event.urlAfterRedirects) {
+        this.router.navigateByUrl('connect');
+      }
+    });
    }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.count = await AppStorage.getItem("count");
   }
 
   onSubmit(form: any) {
@@ -65,9 +75,10 @@ export class TransactionComponent implements OnInit {
   }
 
   async transferFunds() {
+    let walletKey = 'wallet_'+this.count;
     console.log(this.obfuscateKey);
     let appStorage = new AppStorage(this.obfuscateKey);
-    let wallet = await appStorage.loadItemFromStorage('wallet');
+    let wallet = await appStorage.loadItemFromStorage(walletKey);
     let sender = wallet.address;
     console.log("sender: ", sender);
     let data = await AppStorage.loadPrivatekeyFromStorage('privateKey', this.passwordKey);

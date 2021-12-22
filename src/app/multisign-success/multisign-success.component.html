@@ -1,0 +1,11 @@
+<h2>Billetera multifirma creada con éxito</h2>
+<h3>Dirección multifirma</h3>
+<b>{{data.address}}</b>
+<h3>Comparta el siguiente código con sus cofirmantes</h3>
+<div>
+    <button mat-raised-button [cdkCopyToClipboard]="data.sharedSecret">Copiar</button>
+    <button mat-raised-button>Codigo QR</button>
+</div>
+<textarea>
+    {{data.sharedSecret}}
+</textarea>

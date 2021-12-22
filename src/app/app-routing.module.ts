@@ -9,6 +9,9 @@ import { VerifyPasswordComponent } from './verify-password/verify-password.compo
 import { VerifyMnemonicComponent } from './verify-mnemonic/verify-mnemonic.component';
 import { ImportWalletComponent } from './import-wallet/import-wallet.component';
 import { TransactionComponent } from './transaction/transaction.component';
+import { MultisignComponent } from './multisign/multisign.component';
+import { ImportMultisignComponent } from './import-multisign/import-multisign.component';
+
 
 const routes: Routes = [
   { path: 'new-account', component: NewAccountComponent },
@@ -19,7 +22,9 @@ const routes: Routes = [
   { path: 'verify', component: VerifyPasswordComponent },
   { path: 'verify-mnemonic', component: VerifyMnemonicComponent },
   { path: 'import', component: ImportWalletComponent },
-  { path: 'transfer', component: TransactionComponent }
+  { path: 'transfer', component: TransactionComponent },
+  { path: 'multisign', component: MultisignComponent },
+  { path: 'import-multisign', component: ImportMultisignComponent }
 ];
 
 @NgModule({

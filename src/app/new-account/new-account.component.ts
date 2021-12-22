@@ -1,5 +1,6 @@
 import { Component, OnInit, ɵisObservable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import AppStorage from "@randlabs/encrypted-local-storage";
 import { Router } from '@angular/router';
 
@@ -16,7 +17,8 @@ export class NewAccountComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    public dialogRef: MatDialogRef<NewAccountComponent>,
   ) { 
     this.errorMessage = "Revise el formulario";
     this.passwordKey = "masterKey";
@@ -45,6 +47,7 @@ export class NewAccountComponent implements OnInit {
       await AppStorage.createPassword(this.passwordKey, password)
       .then(() => {
         console.log('success');
+        this.dialogRef.close(true);
         this.router.navigateByUrl('display-options');
       })
       .catch(e => {
