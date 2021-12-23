@@ -20,6 +20,7 @@ export class MultisignComponent implements OnInit {
   multisignAddress: string;
   sharedSecret: string;
   multisignForm: FormGroup;
+  addressBook: Array<any>;
   cosignersNum: number;
   signersNum: number;
   errorMessage: string;
@@ -41,6 +42,7 @@ export class MultisignComponent implements OnInit {
     this.wallet = {};
     this.obfuscateKey = "";
     this.count = "0";
+    this.addressBook = [];
     this.multisignForm = this.formBuilder.group({
       'name': ['',[Validators.required]],
       'co_signers': ['',[Validators.required]],
@@ -162,6 +164,8 @@ export class MultisignComponent implements OnInit {
       this.obfuscateKey = result;
       console.log(this.obfuscateKey);
       await this.saveWallet();
+      await this.createAddressBook();
+      AppStorage.setItem("count",this.count);
       this.multisigSuccessOpenDialog();
     });
   }
@@ -183,6 +187,28 @@ export class MultisignComponent implements OnInit {
     });
   }
 
+  async createAddressBook() {
+    let appStorage = new AppStorage(this.obfuscateKey);
+    let hasBook = await AppStorage.hasItem("address_book");
+    if(hasBook) {
+      let addressBook = await appStorage.loadItemFromStorage("address_book").then((addrs: any) => {
+        this.addressBook = addrs
+      })
+      this.addressBook.push({
+        'name': this.getNameWallet(),
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    } else {
+      this.addressBook = [];
+      this.addressBook.push({
+        'name': this.getNameWallet(),
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    }
+    appStorage.saveItemToStorage("address_book", this.addressBook);
+  }
 
   multisigSuccessOpenDialog() {
     let multisigDialog = this.dialog.open(MultisignSuccessComponent,{

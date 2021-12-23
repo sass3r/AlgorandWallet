@@ -3,7 +3,7 @@
         <div class="logo-img">
             <img src="assets/img/logoindigo.png"/>
         </div>
-        <span class="brand">Walbo</span>
+        <span class="brand">Walgo</span>
     </div>
 </div>
 <div class="sidebar-wrapper">
@@ -13,6 +13,14 @@
         </span>
         </form>
         <ul class="nav navbar-nav nav-mobile-menu">
+            <li class="nav-item">
+                <a class="nav-link" (click)="showOptions()" href="javascript:void(0)">
+                    <i class="material-icons">dashboard</i>
+                    <p>
+                        <span class="d-lg-none d-md-block">Menu</span>
+                    </p>
+                </a>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="material-icons">notifications</i>
@@ -28,13 +36,11 @@
         </ul>
   </div>
     <ul class="nav">
-        <!--li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-            <div *ngIf="verify(menuItem.path)">
-                <a class="nav-link" [routerLink]="[menuItem.path]">
-                    <i class="material-icons">{{menuItem.icon}}</i>
-                    <p>{{menuItem.title}}</p>
-                </a>
-            </div>
-        </li-->
+        <li routerLinkActive="active" *ngFor="let address of addressBook" class="nav-item">
+            <a class="nav-link" (click)="navigate(address.index)">
+                <i class="material-icons">account_balance_wallet</i>
+                <p>{{address.name}}</p>
+            </a>
+        </li>
     </ul>
 </div>

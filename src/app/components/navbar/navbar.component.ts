@@ -37,6 +37,10 @@ export class NavbarComponent implements OnInit {
      });
     }
 
+    showOptions() {
+        this.router.navigateByUrl('display-options');
+    }
+
     sidebarOpen() {
         const toggleButton = this.toggleButton;
         const body = document.getElementsByTagName('body')[0];

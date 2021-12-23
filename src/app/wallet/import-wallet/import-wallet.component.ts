@@ -20,6 +20,7 @@ export class ImportWalletComponent implements OnInit {
   private mnemonic: string;
   private passwordKey: string;
   private obfuscateKey: string;
+  addressBook: Array<any>;
   importForm: FormGroup;
   errorMessage: string;
   count: any;
@@ -42,6 +43,7 @@ export class ImportWalletComponent implements OnInit {
     this.errorMessage = "Revise el formulario";
     this.obfuscateKey = "";
     this.count = "0";
+    this.addressBook = [];
     this.router.events
     .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
     .subscribe(event => {
@@ -90,6 +92,7 @@ export class ImportWalletComponent implements OnInit {
       this.obfuscateKey = result;
       await this.savePrivKey();
       await this.saveWallet();
+      await this.createAddressBook();
       AppStorage.setItem("count",this.count);
       this.router.navigateByUrl('balance');
     });
@@ -122,6 +125,29 @@ export class ImportWalletComponent implements OnInit {
       console.log("fail to store wallet");
       console.log(e);
     });
+  }
+
+  async createAddressBook() {
+    let appStorage = new AppStorage(this.obfuscateKey);
+    let hasBook = await AppStorage.hasItem("address_book");
+    if(hasBook) {
+      let addressBook = await appStorage.loadItemFromStorage("address_book").then((addrs: any) => {
+        this.addressBook = addrs
+      })
+      this.addressBook.push({
+        'name': this.walletName,
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    } else {
+      this.addressBook = [];
+      this.addressBook.push({
+        'name': this.walletName,
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    }
+    appStorage.saveItemToStorage("address_book", this.addressBook);
   }
 
 }

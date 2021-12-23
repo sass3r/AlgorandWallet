@@ -6,6 +6,7 @@ import { CommunicationService } from '../services/communication.service';
 import { VerifyPasswordComponent } from '../verify-password/verify-password.component';
 import { MatDialog } from '@angular/material/dialog';
 import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verify-mnemonic',
@@ -18,6 +19,7 @@ export class VerifyMnemonicComponent implements OnInit {
   private privateKey: string;
   private mnemonic: string;
   private obfuscateKey: string;
+  addressBook: Array<any>;
   mnemonicForm: FormGroup;
   walletForm: FormGroup;
   errorMessage: string;
@@ -33,7 +35,8 @@ export class VerifyMnemonicComponent implements OnInit {
     private formBuilder: FormBuilder,
     private communicationService: CommunicationService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { 
     this.errorMessage = "Revise el formulario";
     this.passwordKey = "masterKey";
@@ -50,6 +53,7 @@ export class VerifyMnemonicComponent implements OnInit {
     this.walletForm = this.formBuilder.group({
       'name': ['',[Validators.required]]
     });
+    this.addressBook = [];
     this.count = "0";
     this.verified = false;
     this.address = "";
@@ -95,44 +99,31 @@ export class VerifyMnemonicComponent implements OnInit {
   }
 
   verifyMnemonic(form: any): Boolean {
-    console.log(this.address);
-    console.log(this.mnemonic);
-    console.log(this.privateKey);
     let mnemonic = this.mnemonic.split(" ");
-    console.log(form)
     let entryWord1: string = form['word1'];
     let entryWord2: string = form['word2'];
     let entryWord3: string = form['word3'];
     let entryWord4: string = form['word4'];
     let res: Boolean = true;
-    console.log(mnemonic);
     if(entryWord1 == mnemonic[this.word1-1]){
-      console.log("word1");
-      console.log(mnemonic[this.word1-1]);
       res = res && true;
     }else{
       res = res && false;
     }
 
     if(entryWord2 == mnemonic[this.word2-1]){
-      console.log("word2");
-      console.log(mnemonic[this.word2-1]);
       res = res && true;
     }else{
       res = res && false;
     }
 
     if(entryWord3 == mnemonic[this.word3-1]){
-      console.log("word3");
-      console.log(mnemonic[this.word3-1]);
       res = res && true;
     }else{
       res = res && false;
     }
 
     if(entryWord4 == mnemonic[this.word4-1]){
-      console.log("word4");
-      console.log(mnemonic[this.word4-1]);
       res = res && true;
     }else{
       res = res && false;
@@ -142,7 +133,6 @@ export class VerifyMnemonicComponent implements OnInit {
 
   onSubmit(form: any) {
     let verification = this.verifyMnemonic(form);
-    console.log(verification);
     if(verification){
       this.verified = true;
     }
@@ -187,6 +177,7 @@ export class VerifyMnemonicComponent implements OnInit {
   }
 
   verifyPasswordOpenDialog() {
+    let appStorage = new AppStorage(this.obfuscateKey);
     let passwordDialog = this.dialog.open(VerifyPasswordComponent,{
       width: '230px',
       disableClose: true,
@@ -195,9 +186,33 @@ export class VerifyMnemonicComponent implements OnInit {
       this.obfuscateKey = result;
       await this.savePrivKey();
       await this.saveWallet();
+      await this.createAddressBook();
       AppStorage.setItem("count",this.count);
       this.router.navigateByUrl('balance');
     });
+  }
+
+  async createAddressBook() {
+    let appStorage = new AppStorage(this.obfuscateKey);
+    let hasBook = await AppStorage.hasItem("address_book");
+    if(hasBook) {
+      let addressBook = await appStorage.loadItemFromStorage("address_book").then((addrs: any) => {
+        this.addressBook = addrs
+      })
+      this.addressBook.push({
+        'name': this.walletName,
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    } else {
+      this.addressBook = [];
+      this.addressBook.push({
+        'name': this.walletName,
+        'index': 'wallet_'+this.count,
+        'keyIndex': 'privateKey_'+this.count,
+      })
+    }
+    appStorage.saveItemToStorage("address_book", this.addressBook);
   }
 
   getRandomValue(): string {

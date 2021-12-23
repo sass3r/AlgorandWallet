@@ -3,7 +3,7 @@ import AppStorage from "@randlabs/encrypted-local-storage";
 import { CommunicationService } from '../services/communication.service';
 import * as algosdk from 'algosdk';
 import { Algodv2 } from 'algosdk';
-import { Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -18,6 +18,7 @@ export class BalanceComponent implements OnInit {
   private algodClient: Algodv2;
   private wallet: any;
   private obfuscateKey: string;
+  private walletKey: string;
   walletAddress: string;
   amount: string;
   count: any;
@@ -25,6 +26,7 @@ export class BalanceComponent implements OnInit {
   constructor(
     private communicationService: CommunicationService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     this.algodServer = 'http://200.58.83.81';
@@ -35,6 +37,7 @@ export class BalanceComponent implements OnInit {
     this.amount = "";
     this.walletAddress = "";
     this.count = "0";
+    this.walletKey = this.activatedRoute.snapshot.params['key'];
     this.router.events
       .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
       .subscribe(event => {
@@ -57,7 +60,9 @@ export class BalanceComponent implements OnInit {
       }
     });
     this.communicationService.emitChange({topic: 'getObfuscateKey'});
-    this.getWallet();
+    setInterval(()=>{
+      this.getWallet();
+    },1000);
   }
 
   async getBalance() {
@@ -73,7 +78,12 @@ export class BalanceComponent implements OnInit {
   }
 
   async getWallet() {
-    let walletKey = 'wallet_'+this.count;
+    let walletKey = "";
+    if(this.walletKey == undefined) {
+      walletKey = 'wallet_'+this.count;
+    } else {
+      walletKey = this.walletKey;
+    }
     console.log(this.obfuscateKey);
     let appStorage = new AppStorage(this.obfuscateKey);
     let data = await appStorage.loadItemFromStorage(walletKey)

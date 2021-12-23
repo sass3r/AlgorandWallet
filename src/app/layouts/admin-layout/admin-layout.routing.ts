@@ -18,6 +18,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'new-wallet', component: NewWalletComponent },
     { path: 'display-options', component: ShowMenuComponent },
     { path: 'balance', component: BalanceComponent },
+    { path: 'balance/:key', component: BalanceComponent },
     { path: 'verify', component: VerifyPasswordComponent },
     { path: 'verify-mnemonic', component: VerifyMnemonicComponent },
     { path: 'import', component: ImportWalletComponent },

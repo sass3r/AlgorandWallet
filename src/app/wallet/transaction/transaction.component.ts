@@ -9,6 +9,7 @@ import AlgodClient from 'algosdk/dist/types/src/client/v2/algod/algod';
 import * as algosdk from 'algosdk';
 import { Algodv2 } from 'algosdk';
 import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-transaction',
@@ -36,6 +37,7 @@ export class TransactionComponent implements OnInit {
     private router: Router,
     private communicationService: CommunicationService,
     private dialog: MatDialog,
+    private toastr: ToastrService,
   ) {
     this.errorMessage = "Revise el formulario";
     this.passwordKey = "masterKey";
@@ -98,6 +100,7 @@ export class TransactionComponent implements OnInit {
     await this.algodClient.sendRawTransaction(signedTxn).do();
     //Wait for confirmation
     let confirmedTxn = await this.waitForConfirmation(this.algodClient,txId,4);
+    this.toastr.info("Transaccion enviada con exito");
     console.log("Transaction " + txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
     let string = new TextDecoder().decode(confirmedTxn['txn'].txn.note);
     console.log("Note: ", string);

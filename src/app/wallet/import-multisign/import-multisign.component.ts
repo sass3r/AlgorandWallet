@@ -110,8 +110,9 @@ export class ImportMultisignComponent implements OnInit {
     multisigDialog.afterClosed().subscribe(async (result: any) => {
       this.obfuscateKey = result;
       console.log(this.obfuscateKey);
-      this.router.navigateByUrl('balance');
+      AppStorage.setItem("count",this.count);
       await this.saveWallet();
+      this.router.navigateByUrl('balance');
     });
   }
 
