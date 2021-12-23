@@ -1,0 +1,61 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header indigo">
+                        <h4 class="card-title text">Creación de Billetera Multifirma</h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="multisignForm" (ngSubmit)="onSubmit(multisignForm.value)">
+                            <div>
+                                <mat-form-field>
+                                    <input matInput type="text" name="name" placeholder="Nombre" formControlName="name">
+                                    <mat-error *ngIf="!getNameForm().valid && multisignForm.controls['name'].touched">
+                                        {{errorMessage}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Número total de co-firmantes</mat-label>
+                                    <mat-select formControlName="co_signers">
+                                    <mat-option *ngFor="let num of genArray(cosignersNum)" value="{{num}}">{{num}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="!getCoSignersForm().valid && multisignForm.controls['co_signers'].touched">
+                                        {{errorMessage}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Número requerido de firmantes</mat-label>
+                                    <mat-select formControlName="signers">
+                                    <mat-option *ngFor="let num of genArray(getCosignersNum())" value="{{num}}">{{num}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="!getCoSignersForm().valid && multisignForm.controls['co_signers'].touched">
+                                        {{errorMessage}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="getCosignersNum() != 0">
+                                <mat-form-field>
+                                    <input matInput type="text" name="signer_address" placeholder="Firma #1" formControlName="signer_address">
+                                    <mat-error *ngIf="!getSignerAddressForm().valid && multisignForm.controls['signer_address'].touched">
+                                        {{errorMessage}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngFor="let num of range(2,getCosignersNum())">
+                                <app-sign-line (addressChanged)="addSigner($event)" [id]="num"></app-sign-line>
+                            </div>
+                            <button mat-raised-button type="submit">Crear billetera {{getWalletLabel()}}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    

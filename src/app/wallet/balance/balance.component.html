@@ -1,0 +1,25 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header indigo">
+                        <h4 class="card-title text">Balance</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                        <b>Billetera:</b> <span>{{this.walletAddress}}</span>
+                        </div>
+                        <div>
+                        <b>Saldo:</b> <p>{{amount}}</p>
+                        </div>
+                        <div>
+                            <button mat-raised-button (click)="transfer()">Enviar</button>
+                            <button mat-raised-button>Recibir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

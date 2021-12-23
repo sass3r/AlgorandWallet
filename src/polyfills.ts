@@ -46,10 +46,11 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js';  // Included with Angular CLI.
+import * as jQuery from 'jquery';
 (window as any).global = window;
 (window as any).global.Buffer = require('buffer').Buffer;
 (window as any).process = {};
-
+(window as any).global.$ = jQuery;
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

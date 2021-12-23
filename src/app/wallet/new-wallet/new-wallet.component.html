@@ -1,0 +1,36 @@
+<div class="main-content">
+<div class="container-fluid">
+    <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-header indigo">
+            <h4 class="card-title text">Frase mnemotécnica</h4>
+        </div>
+        <div class="card-body">
+            <div>
+                <button mat-raised-button [cdkCopyToClipboard]="getMnemonic()">Copiar</button>
+                <button mat-raised-button (click)="regenetareAccount()">Regenerar</button>
+            </div>
+            <div>
+                <p>Tome nota de las siguientes palabras en el orden correcto. Forman la frase de recuperación para su nueva cuenta.</p>
+            </div>
+            <div>
+                <p>{{getMnemonic()}}</p>
+            </div>
+            <div>
+                <p>¡No comparta estas palabras con nadie! Estas palabras pueden usarse para robar todos sus fondos.</p>
+            </div>
+            <div>
+                <input type="radio">He escrito y respaldado mi frase mnemotécnica de 25 palabras en el orden correcto.
+            </div> 
+            <div>
+                <button mat-raised-button (click)="continue()">Continuar</button>
+            </div>
+
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+      

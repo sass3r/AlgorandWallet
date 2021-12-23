@@ -1,0 +1,40 @@
+<div class="logo">
+    <div class="simple-text">
+        <div class="logo-img">
+            <img src="assets/img/logoindigo.png"/>
+        </div>
+        <span class="brand">Walbo</span>
+    </div>
+</div>
+<div class="sidebar-wrapper">
+  <div *ngIf="isMobileMenu() && showMenu">
+        <form class="navbar-form">
+        <span class="bmd-form-group">
+        </span>
+        </form>
+        <ul class="nav navbar-nav nav-mobile-menu">
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="material-icons">notifications</i>
+                    <span class="notification">1</span>
+                    <p>
+                        <span class="d-lg-none d-md-block">Notificacion</span>
+                    </p>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="#">Una transaccion pendiente requiere su firma</a>
+                </div>
+            </li>
+        </ul>
+  </div>
+    <ul class="nav">
+        <!--li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+            <div *ngIf="verify(menuItem.path)">
+                <a class="nav-link" [routerLink]="[menuItem.path]">
+                    <i class="material-icons">{{menuItem.icon}}</i>
+                    <p>{{menuItem.title}}</p>
+                </a>
+            </div>
+        </li-->
+    </ul>
+</div>
