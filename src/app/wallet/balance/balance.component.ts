@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import AppStorage from "@randlabs/encrypted-local-storage";
 import { CommunicationService } from '../services/communication.service';
 import * as algosdk from 'algosdk';
-import { Algodv2 } from 'algosdk';
+import { Algodv2, Algod } from 'algosdk';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-balance',
@@ -27,10 +28,11 @@ export class BalanceComponent implements OnInit {
     private communicationService: CommunicationService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-    this.algodServer = 'http://200.58.83.81';
-    this.algodPort = '4001';
+    this.algodServer = 'https://algod.cryptostore.com.bo';
+    this.algodPort = "443";
     this.algodClient = new Algodv2(this.algodToken,this.algodServer, this.algodPort);
     this.wallet = {};
     this.obfuscateKey = "";
@@ -96,6 +98,10 @@ export class BalanceComponent implements OnInit {
     .catch(e => {
       console.log(e);
     });
+  }
+
+  notifyCopy() {
+    this.toastr.info("Direccion copiada");
   }
 
   transfer() {

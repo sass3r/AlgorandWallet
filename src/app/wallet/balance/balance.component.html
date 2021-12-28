@@ -9,6 +9,10 @@
                     <div class="card-body">
                         <div>
                         <b>Billetera:</b> <span>{{this.walletAddress}}</span>
+                        <i class="material-icons" (click)="notifyCopy()" [cdkCopyToClipboard]="this.walletAddress">file_copy</i>
+                        <!--button mat-raised-button [cdkCopyToClipboard]="this.walletAddress">
+                          <i class="material-icons" [cdkCopyToClipboard]="this.walletAddress">file_copy</i>
+                        </button-->
                         </div>
                         <div>
                         <b>Saldo:</b> <p>{{amount}}</p>

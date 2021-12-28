@@ -48,8 +48,8 @@ export class TransactionComponent implements OnInit {
     this.count = "0";
     this.privateKey = new Uint8Array;
     this.algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-    this.algodServer = 'http://200.58.83.81';
-    this.algodPort = '4001';
+    this.algodServer = 'https://algod.cryptostore.com.bo';
+    this.algodPort = '443';
     this.algodClient = new Algodv2(this.algodToken,this.algodServer, this.algodPort);
     this.transferForm = this.formBuilder.group({
       'amount': ['',[Validators.required]],
@@ -70,10 +70,14 @@ export class TransactionComponent implements OnInit {
   }
 
   onSubmit(form: any) {
-    this.amount = form['amount'];
-    this.receiver = form['address'];
-    this.note = form['note'];
-    this.verifyPasswordOpenDialog();
+    if(this.transferForm.valid) {
+      this.amount = form['amount'];
+      this.receiver = form['address'];
+      this.note = form['note'];
+      this.verifyPasswordOpenDialog();
+    }else{
+      this.toastr.error("Complete el formulario");
+    }
   }
 
   async transferFunds() {
@@ -138,15 +142,6 @@ export class TransactionComponent implements OnInit {
     });
   }
 
-  /**
- * Wait until the transaction is confirmed or rejected, or until 'timeout'
- * number of rounds have passed.
- * @param {algosdk.Algodv2} algodClient the Algod V2 client
- * @param {string} txId the transaction ID to wait for
- * @param {number} timeout maximum number of rounds to wait
- * @return {Promise<*>} pending transaction information
- * @throws Throws an error if the transaction is not confirmed or rejected in the next timeout rounds
- */
  async waitForConfirmation (algodClient: Algodv2, txId: string, timeout: number) {
   if (algodClient == null || txId == null || timeout < 0) {
       throw new Error("Bad arguments");
